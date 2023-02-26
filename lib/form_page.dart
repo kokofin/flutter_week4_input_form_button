@@ -91,13 +91,80 @@ class FormPageState extends State<FormPage> {
   }
 }
 
-class ConfirmationPage extends StatelessWidget {
+// class ConfirmationPage extends StatelessWidget {
+//   final String name;
+//   final String email;
+//   final String phone;
+//
+//   const ConfirmationPage({required this.name, required this.email, required this.phone, Key? key})
+//       : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Confirmation Page'),
+//       ),
+//       body: Padding(
+//         padding: const EdgeInsets.all(16.0),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: <Widget>[
+//             Text('Name: $name'),
+//             Text('Email: $email'),
+//             Text('Phone Number: $phone'),
+//             const SizedBox(height: 16.0),
+//             Center(
+//               child: ElevatedButton(
+//                 onPressed: () {
+//                   // Save data here
+//                 },
+//                 child: const Text('Save Data'),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+class ConfirmationPage extends StatefulWidget {
   final String name;
   final String email;
   final String phone;
 
-  const ConfirmationPage({required this.name, required this.email, required this.phone, Key? key})
-      : super(key: key);
+  const ConfirmationPage({
+    required this.name,
+    required this.email,
+    required this.phone,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  ConfirmationPageState createState() => ConfirmationPageState();
+}
+
+class ConfirmationPageState extends State<ConfirmationPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize animation controller and animation
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _animation = Tween<double>(begin: 0, end: 1).animate(_controller);
+
+    // Start animation when the widget is first displayed
+    _controller.forward();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,21 +177,42 @@ class ConfirmationPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text('Name: $name'),
-            Text('Email: $email'),
-            Text('Phone Number: $phone'),
+            Text('Name: ${widget.name}'),
+            Text('Email: ${widget.email}'),
+            Text('Phone Number: ${widget.phone}'),
             const SizedBox(height: 16.0),
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  // Save data here
+                  _saveData();
                 },
                 child: const Text('Save Data'),
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            // Animated widget that fades in the message when data is saved
+            FadeTransition(
+              opacity: _animation,
+              child: const Text(
+                'Data Tersimpan!',
+                style: TextStyle(
+                  color: Colors.green,
+                  fontSize: 18.0,
+                ),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _saveData() {
+    // Simulate saving data with a delay of 2 seconds
+    Future.delayed(const Duration(seconds: 2), () {
+      // Start the animation and rebuild the widget tree
+      _controller.forward(from: 0);
+      setState(() {});
+    });
   }
 }
